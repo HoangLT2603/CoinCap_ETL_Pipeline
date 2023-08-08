@@ -1,0 +1,3 @@
+SHELL=/bin/bash
+HOME=/
+*/5 * * * * WAREHOUSE_USER=nvhuser WAREHOUSE_PASSWORD=123456 WAREHOUSE_DB=finance WAREHOUSE_HOST=datawarehouse WAREHOUSE_PORT=5432  PYTHONPATH=/code/src /usr/local/bin/python /code/src/coinmonitor/exchange_data_etl.py

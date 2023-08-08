@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  datawarehouse:
+    image: postgres:13
+    container_name: datawarehouse
+    environment:
+      POSTGRES_USER : ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: 
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "${POSTGRES_DB}",
+          "-U",
+          "${POSTGRES_USER}"
+        ]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  dashboard:
+    image: metabase/metabase
+    container_name: dashboard
+    ports:
+      - "3000:3000"
+
+  pipelinerunner:
+    image: pipelinerunner
+    container_name: pipelinerunner
+    build:
+      context: ./
+      dockerfile: ./containers/pipelinerunner/Dockerfile
+    volumes:
+      - ./:/code
+    environment:
+      WAREHOUSE_USER: ${POSTGRES_USER}
+      WAREHOUSE_PASSWORD: ${POSTGRES_PASSWORD}
+      WAREHOUSE_DB: ${POSTGRES_DB}
+      WAREHOUSE_HOST: ${POSTGRES_HOST}
+      WARREHOUSE_PORT: ${POSTGRES_PORT}
